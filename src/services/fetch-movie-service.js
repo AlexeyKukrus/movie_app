@@ -6,8 +6,7 @@ const fetchMovies = async () => {
     const data = await response.json();
     return data.results;
   } catch (error) {
-    console.log('Oшибка получения данных фильмов:', error);
-    return [];
+    throw new Error('Oшибка получения данных фильмов:', error);
   }
 };
 

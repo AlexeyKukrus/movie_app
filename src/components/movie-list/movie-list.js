@@ -1,6 +1,9 @@
 import React from 'react';
+import { Spin, Alert } from 'antd';
+import { Offline, Online } from 'react-detect-offline';
 
 import MovieItemDesktop from '../movie-item-desktop/movie-item-desktop';
+import Errors from '../errors/errors';
 import MovieItemMobile from '../movie-item-mobile/movie-item-mobile';
 import fetchMovies from '../../services/fetch-movie-service';
 
@@ -20,6 +23,8 @@ class MovieList extends React.Component {
     this.state = {
       movies: [],
       screenWidth: window.innerWidth,
+      loading: true,
+      error: false,
     };
   }
 
@@ -33,8 +38,19 @@ class MovieList extends React.Component {
   }
 
   fetchMovies = async () => {
-    const movies = await fetchMovies();
-    this.setState({ movies });
+    try {
+      const movies = await fetchMovies();
+      this.setState({ movies, loading: false });
+    } catch {
+      this.onError();
+    }
+  };
+
+  onError = () => {
+    this.setState({
+      error: true,
+      loading: false,
+    });
   };
 
   handleResize = () => {
@@ -42,17 +58,35 @@ class MovieList extends React.Component {
   };
 
   render() {
-    const { movies, screenWidth } = this.state;
+    const { movies, screenWidth, loading, error } = this.state;
+    const spinner = loading ? <Spin size="large" /> : null;
+    const content = !(loading || error) ? <MovieListView movies={movies} screenWidth={screenWidth} /> : null;
+    const errorMessage = error ? <Errors /> : null;
     return (
       <ul className="movies">
-        {movies.map((movie) => {
-          if (screenWidth > 910) {
-            return <MovieItemDesktop key={movie.id} movie={movie} shortText={cropText(movie.overview, 150)} />;
-          }
-          return <MovieItemMobile key={movie.id} movie={movie} shortText={cropText(movie.overview, 300)} />;
-        })}
+        <Online>
+          {errorMessage}
+          {spinner}
+          {content}
+        </Online>
+        <Offline>
+          <Alert message="No internet connection. Please check your network settings" type="warning" />
+        </Offline>
       </ul>
     );
   }
+}
+
+function MovieListView({ movies, screenWidth }) {
+  return (
+    <>
+      {movies.map((movie) => {
+        if (screenWidth > 910) {
+          return <MovieItemDesktop key={movie.id} movie={movie} shortText={cropText(movie.overview, 150)} />;
+        }
+        return <MovieItemMobile key={movie.id} movie={movie} shortText={cropText(movie.overview, 300)} />;
+      })}
+    </>
+  );
 }
 export default MovieList;

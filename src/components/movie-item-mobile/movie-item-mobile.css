@@ -43,3 +43,6 @@
   line-height: 22px;
   margin-top: 10px;
 }
+:where(.css-dev-only-do-not-override-pr0fja).ant-spin-spinning {
+  display: block;
+}
