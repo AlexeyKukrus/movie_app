@@ -1,0 +1,24 @@
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f7f7f7;
+  color: #111111;
+  margin: 0 auto;
+}
+:focus {
+  outline: 0;
+}
+h5,
+p {
+  margin: 0;
+}
+.container {
+  background: #fff;
+  max-width: 1010px;
+  margin: 0 auto;
+}
+
+@media (max-width: 910px) {
+  body {
+    background: #fff;
+  }
+}

@@ -1,0 +1,45 @@
+.movie__card {
+  max-width: 388px;
+  height: 279px;
+  box-shadow: 0px 4px 12px 0px #00000026;
+  overflow: hidden;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+}
+.card-header {
+  display: flex;
+}
+.card-header_image {
+  max-width: 60px;
+  max-height: 91px;
+}
+.card-header__info {
+  margin-left: 12px;
+}
+.info__title {
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 28px;
+}
+.info__release {
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 22px;
+  color: #827e7e;
+  margin-bottom: 6px;
+}
+.info__genre {
+  display: inline-block;
+  padding: 2px 4px;
+  border: 1px solid #d9d9d9;
+  font-size: 12px;
+  line-height: 14px;
+  color: #827e7e;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+.card-description {
+  font-size: 12px;
+  line-height: 22px;
+  margin-top: 10px;
+}

@@ -1,0 +1,3 @@
+{
+  "src/components/**/*.js": ["eslint --fix", "prettier --write"]
+}
