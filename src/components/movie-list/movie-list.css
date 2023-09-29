@@ -1,4 +1,7 @@
 .movies {
+  padding: 0;
+}
+.movies span {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -16,7 +19,7 @@
 }
 
 @media (max-width: 440px) {
-  .movies {
+  .movies span {
     display: block;
     max-width: 90%;
     margin: 0 auto;

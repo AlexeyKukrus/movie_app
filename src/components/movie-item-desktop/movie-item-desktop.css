@@ -6,6 +6,9 @@
   overflow: hidden;
   margin-bottom: 24px;
 }
+.movies__image {
+  max-width: 183px;
+}
 .movies__description {
   margin: 15px;
 }

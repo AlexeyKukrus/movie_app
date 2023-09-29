@@ -13,7 +13,9 @@ function MovieItemMobile({ movie, shortText }) {
         />
         <div className="card-header__info">
           <h5 className="info__title">{movie.title}</h5>
-          <p className="info__release">{format(new Date(movie.release_date), 'MMMM dd, yyyy')}</p>
+          {movie.release_date && (
+            <p className="info__release">{format(new Date(movie.release_date), 'MMMM dd, yyyy')}</p>
+          )}
           <p className="info__genre">Action</p>
         </div>
       </div>

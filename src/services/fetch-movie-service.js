@@ -1,7 +1,7 @@
-const fetchMovies = async () => {
+const fetchMovies = async (search, page) => {
   try {
     const response = await fetch(
-      'https://api.themoviedb.org/3/search/movie?api_key=bc2677da3dd13efa950721ffd0d57c87&query="return"'
+      `https://api.themoviedb.org/3/search/movie?api_key=bc2677da3dd13efa950721ffd0d57c87&query='${search}'&page=${page}`
     );
     const data = await response.json();
     return data.results;
