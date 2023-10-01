@@ -14,20 +14,19 @@ p {
 .container {
   background: #fff;
   max-width: 1010px;
+  min-height: 100vh;
   margin: 0 auto;
 }
 .search-input {
   margin: 10px auto;
   max-width: 938px !important;
 }
-:where(.css-dev-only-do-not-override-pr0fja).ant-pagination {
-  display: block;
-  max-width: 310px;
-  margin: 0 auto 10px auto;
-}
 
 @media (max-width: 910px) {
   body {
     background: #fff;
+  }
+  .container {
+    max-width: 420px;
   }
 }

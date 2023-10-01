@@ -1,28 +1,34 @@
 import React from 'react';
-import { Input, Pagination } from 'antd';
-import { debounce } from 'lodash';
 
+import ServiceApi from '../../services/fetch-movie-service';
+import GuestSession from '../../services/guest-session-service';
+import Context from '../context/context';
+import ToggleTab from '../toggle-tab/toggle-tab';
 import MovieList from '../movie-list/movie-list';
-import fetchMovies from '../../services/fetch-movie-service';
+import RatedList from '../rated-list/rated-list';
+import Error from '../error/error';
+
 import './app.css';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      movies: [],
-      loading: true,
+      pageTab: 'search',
+      genres: [],
+      guestToken: '',
+      dataRated: {
+        moviesRated: [],
+        totalPage: 0,
+        page: 1,
+      },
       error: false,
+      errorMessage: '',
       screenWidth: window.innerWidth,
-      currentPage: 1,
-      inputValue: 'return',
-      noResult: false,
     };
-  }
 
-  componentDidMount() {
-    this.fetchMoviesData();
-    window.addEventListener('resize', this.handleResize);
+    this.api = new ServiceApi();
+    this.guest = new GuestSession();
   }
 
   componentWillUnmount() {
@@ -33,47 +39,106 @@ class App extends React.Component {
     this.setState({ screenWidth: window.innerWidth });
   };
 
-  handlePaginationChange = (page) => {
-    this.setState({ currentPage: page, loading: true }, () => {
-      this.fetchMoviesData();
+  onError = (e) => {
+    console.log('ERROR!');
+    console.log(e);
+    console.log(e.message);
+    this.setState({
+      error: true,
+      errorMessage: e.message,
     });
   };
 
-  handleInputChange = debounce((e) => {
-    e.preventDefault();
-    this.setState({ inputValue: e.target.value, loading: true }, () => {
-      this.fetchMoviesData();
+  changePage = (tab) => {
+    this.setState({
+      pageTab: tab,
     });
-  }, 1500);
+  };
 
-  fetchMoviesData = async () => {
-    const { currentPage, inputValue } = this.state;
-    try {
-      const movies = await fetchMovies(inputValue, currentPage);
-      if (movies.length === 0) {
-        this.setState({ movies, loading: false, noResult: true });
-      } else {
-        this.setState({ movies, loading: false, noResult: false });
-      }
-    } catch {
-      this.setState({ error: true, loading: false });
+  getGenres = () => {
+    this.api
+      .getGenres()
+      .then((res) => {
+        this.setState({ genres: res.genres });
+      })
+      .catch(this.onError);
+  };
+
+  getToken = () => {
+    const token = localStorage.getItem('guest');
+    if (token) this.setState({ guestToken: token });
+    else {
+      this.guest
+        .getToken()
+        .then((token) => {
+          this.setState({ guestToken: token });
+          localStorage.setItem('guest', `${token}`);
+        })
+        .catch(this.onError);
     }
   };
 
-  render() {
-    const { movies, loading, error, screenWidth, currentPage, noResult } = this.state;
+  getAllMovies = (movieName) => {
+    return this.api.getAllMovies(`${movieName}`);
+  };
 
+  getPageMovies = (movieName, numPage) => {
+    return this.api.getPageMovies(`${movieName}`, `${numPage}`);
+  };
+
+  sendRateStars = (id, countStars) => {
+    this.guest.postRateStars(this.state.guestToken, id, countStars).catch(this.onError);
+  };
+
+  getGuestSession = (page = 1) => {
+    return this.guest.getSession(this.state.guestToken, page);
+  };
+
+  getPageSession = (page) => {
+    return this.api.getSession(this.state.guestToken, page);
+  };
+
+  componentDidMount() {
+    this.getGenres();
+    this.getToken();
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  render() {
+    const { genres, pageTab, error, errorMessage, screenWidth } = this.state;
+    const errorMessage1 = error ? <Error errorMessage={errorMessage} /> : null;
+    const viewTab = (pageTab) => {
+      if (pageTab === 'search')
+        return (
+          <MovieList
+            pageTab={pageTab}
+            onError={this.onError}
+            sendRateStars={this.sendRateStars}
+            getAllMovies={this.getAllMovies}
+            getPageMovies={this.getPageMovies}
+            screenWidth={screenWidth}
+          />
+        );
+      else if (pageTab === 'rated')
+        return (
+          <RatedList
+            pageTab={pageTab}
+            onError={this.onError}
+            getGuestSession={this.getGuestSession}
+            getPageSession={this.getPageSession}
+            screenWidth={screenWidth}
+          />
+        );
+    };
     return (
-      <div className="container">
-        <Input placeholder="Type to search..." className="search-input" onChange={this.handleInputChange} />
-        <MovieList movies={movies} loading={loading} error={error} screenWidth={screenWidth} noResult={noResult} />
-        <Pagination
-          className="pagination"
-          defaultCurrent={currentPage}
-          total={50}
-          onChange={this.handlePaginationChange}
-        />
-      </div>
+      <Context.Provider value={genres}>
+        <section className="container">
+          {/* {errorMessage1} */}
+          <ToggleTab changePage={this.changePage} active={pageTab} />
+          {viewTab(pageTab)}
+          {errorMessage1}
+        </section>
+      </Context.Provider>
     );
   }
 }

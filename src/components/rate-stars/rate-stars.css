@@ -1,0 +1,17 @@
+.card__stars {
+  position: absolute;
+  bottom: 8px;
+}
+:where(.css-dev-only-do-not-override-pr0fja).ant-rate .ant-rate-star:not(:last-child) {
+  margin-inline-end: 3px;
+}
+
+@media (max-width: 910px) {
+  .card__stars {
+    bottom: 16px;
+    right: 16px;
+  }
+  :where(.css-dev-only-do-not-override-pr0fja).ant-rate .ant-rate-star:not(:last-child) {
+    margin-inline-end: 3px;
+  }
+}

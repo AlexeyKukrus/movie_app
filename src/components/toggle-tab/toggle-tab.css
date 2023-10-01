@@ -1,0 +1,36 @@
+.tabs {
+  width: 146px;
+  height: 54px;
+  box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.09);
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+}
+.search {
+  width: 64px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+}
+.rated {
+  width: 64px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+}
+.search__input,
+.rated__input {
+  display: none;
+}
+.search:hover,
+.rated:hover {
+  cursor: pointer;
+}
+.active {
+  color: #1890ff;
+  border-bottom: 2px solid #1890ff;
+}
