@@ -1,1 +1,1 @@
-Movies database App in React - link: https://alexeykukrus.github.io/movie_app/
+Movies database App in React - link: hhttps://alexeykukrus.github.io/movie_app
